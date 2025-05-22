@@ -1,0 +1,281 @@
+/* General Container */
+.container {
+  font-family: 'Segoe UI', sans-serif;
+  padding: 16px;
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 80px;
+  background-color: #f5f8fc;
+  box-sizing: border-box;
+  color: #222;
+}
+
+/* Top bar with category and add button */
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.dateFieldWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.calendarIcon {
+  cursor: pointer;
+  color: #007bff;
+  flex-shrink: 0;
+}
+
+.taskInput {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 1em;
+  background-color: white;
+  color: #333;
+}
+
+.select {
+  padding: 8px 12px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #333;
+}
+
+/* Add Button */
+.addButton {
+  padding: 8px 12px;
+  cursor: pointer;
+  background: #0066cc;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+.addButton:hover {
+  background: #004c99;
+}
+
+/* Task List */
+.taskList {
+  margin-bottom: 100px;
+}
+
+.taskItem {
+  background: #ffffff;
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.1s ease;
+}
+.taskItem:hover {
+  transform: scale(1.01);
+}
+
+.taskHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.categoryTag {
+  font-size: 0.75rem;
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+.taskMeta {
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 6px;
+}
+
+/* Bottom Navigation */
+.navBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #ffffff;
+  border-top: 1px solid #ddd;
+  height: 60px;
+  box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.05);
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #333;
+  cursor: pointer;
+}
+.navItem:hover {
+  color: #0066cc;
+}
+
+/* Popup Overlay and Box */
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.popup {
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  color: #222;
+}
+
+/* Inputs and Textareas */
+.input {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fdfdfd;
+  color: #111;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.15);
+}
+
+.textarea {
+  height: 90px;
+  resize: none;
+}
+
+/* Popup Buttons */
+.dateFieldWrapper {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+
+.popupButtons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.popupButton {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: 6px;
+  margin: 0 4px;
+  background: #007bff;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.popupButton:hover {
+  background: #0056b3;
+}
+
+/* Popup Header */
+.popupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Add New Category Section */
+.categoryInput {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.dueLabel {
+  color: #007bff;
+  font-weight: 500;
+  margin-left: 5px;
+}
+
+
+
+.taskHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.taskHeader h3 {
+  margin: 0;
+  flex-grow: 1; /* Ensure the title takes up space before icons */
+}
+
+.taskActions {
+  display: flex;
+  gap: 10px;
+}
+
+.editBtn, .deleteBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.editBtn {
+  color: #8f8c8c;/* Green for Edit */
+}
+
+.deleteBtn {
+  color: #8f8c8c; /* Red for Delete */
+}
+
+.editBtn:hover {
+  color: #4507f0;
+}
+
+.deleteBtn:hover {
+  color: #4507f0;
+}
+
+.taskMeta {
+  font-size: 0.85em;
+  color: #555;
+  margin-top: 5px;
+}
