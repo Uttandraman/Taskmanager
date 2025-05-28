@@ -98,6 +98,7 @@ export default function CalendarPage() {
   const COLORS = ["#4caf50", "#f44336"];
 
   return (
+    <div>
     <div className="calendar-page">
       <h2 className="page-title"> Calendar</h2>
 
@@ -189,8 +190,8 @@ export default function CalendarPage() {
           </div>
         </div>
       </div>
-
-      <div className="navBar">
+    </div>
+    <div className="navBar">
         <div className="navItem" onClick={() => navigate("/task")}>
           <List size={20} />
           <span>Task</span>

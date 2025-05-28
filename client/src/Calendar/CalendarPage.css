@@ -3,17 +3,17 @@
   font-family: 'Segoe UI', sans-serif;
   background-color: #f0f2f5;
   min-height: 100vh;
+  box-sizing: border-box;
+  padding-bottom: 100px; /* Prevents overlap with navBar */
 }
 
-.calendar-page {
+.calendar-page > .calendar-container {
   background-color: #ffffff;
   border-radius: 20px;
   padding: 30px;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 50px auto;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  margin-top: 50px;
-  margin-bottom: 50px;
 }
 
 /* Title */
@@ -29,6 +29,7 @@
   display: flex;
   gap: 30px;
   align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 /* Calendar and tasks */
@@ -51,7 +52,7 @@
 
 /* Ensure all calendar tile text is visible */
 .react-calendar__tile {
-  color: #333 !important; /* dark readable text */
+  color: #333 !important;
   font-weight: 500;
   font-size: 16px;
 }
@@ -87,14 +88,12 @@
   font-weight: 600;
 }
 
-/* Ensure buttons are visible */
 .react-calendar__navigation button {
   color: #2c3e50 !important;
   background: transparent;
   font-size: 18px;
 }
 
-/* Optional: Improve hover on navigation */
 .react-calendar__navigation button:hover {
   background-color: #e6f0fa;
   border-radius: 6px;
@@ -104,13 +103,11 @@
   margin-top: 2px;
   height: 4px;
   width: 4px;
-  background-color: #060606; /* Green dot */
+  background-color: #060606;
   border-radius: 50%;
   margin-left: auto;
   margin-right: auto;
 }
-
-
 
 /* Task list section */
 .task-list-section {
@@ -174,7 +171,6 @@
   white-space: nowrap;
 }
 
-
 /* Summary panel */
 .summary-box {
   flex: 1;
@@ -182,6 +178,7 @@
   flex-direction: column;
   gap: 20px;
 }
+
 /* Card styles for summary and chart */
 .summary-card,
 .chart-card {
@@ -231,10 +228,8 @@
   color: #000;
 }
 
-
-
-
-navBar {
+/* Navigation Bar */
+.navBar {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -246,6 +241,7 @@ navBar {
   border-top: 1px solid #ddd;
   height: 60px;
   box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.05);
+  z-index: 999;
 }
 
 .navItem {
@@ -256,7 +252,7 @@ navBar {
   color: #333;
   cursor: pointer;
 }
+
 .navItem:hover {
   color: #0066cc;
 }
-
