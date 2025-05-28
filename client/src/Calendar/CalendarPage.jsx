@@ -27,6 +27,7 @@ export default function CalendarPage() {
         const res = await axios.get(
           `http://localhost:5000/api/tasks?userEmail=${user.email}`
         );
+        console.log(`http://localhost:5000/api/tasks?userEmail=${user.email}`);
         setTasks(res.data);
       } catch (err) {
         console.error("Error fetching tasks:", err);
@@ -36,9 +37,14 @@ export default function CalendarPage() {
     fetchTasks();
   }, [user.email]);
 
+  const dateHasTask = (date) => {
+    const dateStr = date.toISOString().split("T")[0];
+    return tasks.some((task) => task.dueDate?.startsWith(dateStr));
+  };
+
   const selectedDateStr = selectedDate.toISOString().split("T")[0];
-  const filteredTasks = tasks.filter(
-    (task) => task.dueDate?.startsWith(selectedDateStr)
+  const filteredTasks = tasks.filter((task) =>
+    task.dueDate?.startsWith(selectedDateStr)
   );
 
   const selectedMonth = selectedDate.getMonth();
@@ -52,17 +58,42 @@ export default function CalendarPage() {
     );
   });
 
-  const completedInMonth = tasksInMonth.filter(
+  // Prepare pie chart data from completed tasks
+  const completedTasks = tasksInMonth.filter(
     (task) => task.category === "Completed"
   );
+  const incompleteTasks = tasksInMonth.filter(
+    (task) => task.category !== "Completed"
+  );
 
+  const categoryColorMap = new Map(); // to collect category names and color totals
+
+  completedTasks.forEach((task) => {
+    const category = task.originalCategory || "Unknown";
+    const color = task.categoryColor || "#4caf50";
+
+    if (!categoryColorMap.has(category)) {
+      categoryColorMap.set(category, {
+        name: category,
+        value: 0,
+        color: color,
+      });
+    }
+    categoryColorMap.get(category).value += 1;
+  });
+
+  // Final pie data array
   const pieData = [
-    { name: "Completed", value: completedInMonth.length },
+    ...categoryColorMap.values(),
     {
       name: "Incomplete",
-      value: tasksInMonth.length - completedInMonth.length,
+      value: incompleteTasks.length,
+      color: "#9e9e9e", // gray
     },
   ];
+
+  console.log("Pie Data:", pieData);
+
 
   const COLORS = ["#4caf50", "#f44336"];
 
@@ -76,6 +107,11 @@ export default function CalendarPage() {
             onChange={setSelectedDate}
             value={selectedDate}
             className="custom-calendar"
+            tileContent={({ date, view }) =>
+              view === "month" && dateHasTask(date) ? (
+                <div className="dot" />
+              ) : null
+            }
           />
 
           <div className="task-list-section">
@@ -88,8 +124,17 @@ export default function CalendarPage() {
                   <li
                     key={`${task.title}-${task.dueDate}-${index}`}
                     className="task-card"
+                    style={{ borderLeft: `5px solid ${task.categoryColor}` }}
                   >
-                    <p className="task-title">{task.title}</p>
+                    <div className="task-title-row">
+                      <p className="task-title">{task.title}</p>
+                      <span
+                        className="task-category-badge"
+                        style={{ backgroundColor: task.categoryColor }}
+                      >
+                        {task.category}
+                      </span>
+                    </div>
                     <p className="task-desc">{task.description}</p>
                   </li>
                 ))}
@@ -107,31 +152,40 @@ export default function CalendarPage() {
           </div>
           <div className="summary-card">
             <h4> Completed This Month</h4>
-            <p className="summary-count">{completedInMonth.length}</p>
+            <p className="summary-count">{completedTasks.length}</p>
+
           </div>
           <div className="chart-card">
             <h4> Task Completion</h4>
-            <ResponsiveContainer width="100%" height={200}>
+            <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
                   data={pieData}
                   cx="50%"
                   cy="50%"
-                  labelLine={false}
-                  outerRadius={60}
+                  outerRadius={70}
+                  label={({ name }) => name}
                   dataKey="value"
+                  isAnimationActive={false} // helpful for debugging
                 >
                   {pieData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
+                    <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
                 <Tooltip />
-                <Legend verticalAlign="bottom" height={36} />
               </PieChart>
             </ResponsiveContainer>
+            <div className="chart-legend">
+              {pieData.map((item, index) => (
+                <div key={index} className="legend-item">
+                  <span
+                    className="legend-color"
+                    style={{ backgroundColor: item.color }}
+                  />
+                  <span className="legend-label">{item.name}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

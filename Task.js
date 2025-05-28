@@ -5,7 +5,9 @@ const TaskSchema = new mongoose.Schema({
   description: String,
   dueDate: String,
   category: String,
-  userEmail: String, // Optional if you want user-based separation
+  originalCategory: String,
+  userEmail: String,
+  categoryColor: String,
 });
 
 module.exports = mongoose.model("Task", TaskSchema);

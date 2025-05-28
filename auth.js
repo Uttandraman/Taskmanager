@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('./User');
 const Task = require('./Task');
+const CategoryColor = require("./CategoryColor");
 
 // POST /api/signup
 router.post('/signup', async (req, res) => {
@@ -18,7 +19,6 @@ router.post('/signup', async (req, res) => {
       return res.status(409).json({ message: 'Email already registered.' });
     }
 
-    // Create and save new user (no hashing)
     const newUser = new User({ name, email, password });
     await newUser.save();
 
@@ -48,17 +48,42 @@ router.post('/login', async (req, res) => {
   }
 });
 
+
+function getRandomColor() {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
 router.post("/tasks", async (req, res) => {
   try {
-    const task = new Task(req.body);
+    const { category, userEmail } = req.body;
+
+    let categoryColorDoc = await CategoryColor.findOne({ category, userEmail });
+
+    if (!categoryColorDoc) {
+      const newColor = getRandomColor();
+      categoryColorDoc = new CategoryColor({
+        category,
+        userEmail,
+        color: newColor,
+      });
+      await categoryColorDoc.save();
+    }
+
+    const task = new Task({ ...req.body, categoryColor: categoryColorDoc.color });
     await task.save();
+
     res.status(201).json(task);
   } catch (err) {
     res.status(500).json({ message: "Error creating task", error: err });
   }
 });
 
-// Backend: GET /api/tasks?userEmail=test@example.com
+
 router.get("/tasks", async (req, res) => {
   const { userEmail } = req.query;
   try {
@@ -72,12 +97,44 @@ router.get("/tasks", async (req, res) => {
 // Update a task
 router.put("/tasks/:id", async (req, res) => {
   try {
-    const updated = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(updated);
+    const { category, userEmail } = req.body;
+
+    let updateData = { ...req.body };
+
+    // Fetch the existing task first
+    const existingTask = await Task.findById(req.params.id);
+    if (!existingTask) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    // If changing to "Completed", retain the original color
+    if (category === "Completed") {
+      updateData.categoryColor = existingTask.categoryColor;
+      updateData.originalCategory = existingTask.category; // Store original category if needed
+    } else if (category && userEmail) {
+      // For any other category, assign color from CategoryColor model
+      let colorDoc = await CategoryColor.findOne({ category, userEmail });
+
+      if (!colorDoc) {
+        const newColor = getRandomColor();
+        colorDoc = new CategoryColor({ category, userEmail, color: newColor });
+        await colorDoc.save();
+      }
+
+      updateData.categoryColor = colorDoc.color;
+    }
+
+    const updatedTask = await Task.findByIdAndUpdate(req.params.id, updateData, {
+      new: true,
+    });
+
+    res.json(updatedTask);
   } catch (err) {
     res.status(500).json({ message: "Error updating task", error: err });
   }
 });
+
+
 
 // Delete a task
 router.delete("/tasks/:id", async (req, res) => {

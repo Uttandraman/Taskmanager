@@ -5,7 +5,6 @@
   min-height: 100vh;
 }
 
-/* NEW: Parent container that wraps calendar and summary */
 .calendar-page {
   background-color: #ffffff;
   border-radius: 20px;
@@ -101,6 +100,17 @@
   border-radius: 6px;
 }
 
+.dot {
+  margin-top: 2px;
+  height: 4px;
+  width: 4px;
+  background-color: #060606; /* Green dot */
+  border-radius: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
 
 /* Task list section */
 .task-list-section {
@@ -149,6 +159,22 @@
   font-size: 14px;
 }
 
+.task-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.task-category-badge {
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  border-radius: 12px;
+  color: #fff;
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
+
 /* Summary panel */
 .summary-box {
   flex: 1;
@@ -180,6 +206,33 @@
   color: #2c7be5;
 }
 
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  margin-bottom: 40px;
+  gap: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+}
+
+.legend-color {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.legend-label {
+  font-size: 0.9rem;
+  color: #000;
+}
+
+
+
 
 navBar {
   position: fixed;
@@ -206,3 +259,4 @@ navBar {
 .navItem:hover {
   color: #0066cc;
 }
+

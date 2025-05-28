@@ -9,15 +9,15 @@ import { AuthContext } from "./AuthContext";
 
 export default function TaskListPage() {
   const datePickerRef = useRef();
-  const {user} = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [showPopup, setShowPopup] = useState(false);
- const [taskInput, setTaskInput] = useState({
-  title: "",
-  dueDate: "",
-  description: "",
-  category: "General",
-  userEmail: user?.email || ""
-});
+  const [taskInput, setTaskInput] = useState({
+    title: "",
+    dueDate: "",
+    description: "",
+    category: "General",
+    userEmail: user?.email || "",
+  });
 
   const [tasks, setTasks] = useState([]);
   const [categories, setCategories] = useState(["General", "Completed"]);
@@ -27,34 +27,85 @@ export default function TaskListPage() {
   const [editIndex, setEditIndex] = useState(null);
   const navigate = useNavigate();
   const navigate1 = useNavigate();
-  
+
   //console.log(user);
   useEffect(() => {
-  if (user?.email) {
-    axios.get(`http://localhost:5000/api/tasks?userEmail=${user.email}`)
-      .then(res => setTasks(res.data));
-  }
-}, [user]);
+    if (user?.email) {
+      axios
+        .get(`http://localhost:5000/api/tasks?userEmail=${user.email}`)
+        .then((res) => {
+          const fetchedTasks = res.data;
+          setTasks(fetchedTasks);
 
+          // Dynamically calculate active categories (excluding "Completed")
+          const activeCategories = Array.from(
+            new Set(
+              fetchedTasks
+                .filter((task) => task.category !== "Completed")
+                .map((task) => task.category)
+            )
+          );
+
+          const finalCategories = [...activeCategories, "Completed"];
+          setCategories(finalCategories);
+        });
+    }
+  }, [user]);
+
+  useEffect(() => {
+  const activeCategories = Array.from(
+    new Set(
+      tasks
+        .filter((task) => task.category !== "Completed")
+        .map((task) => task.category)
+    )
+  );
+
+  const finalCategories = [...activeCategories, "Completed"];
+  setCategories(finalCategories);
+}, [tasks]);
+
+
+  useEffect(() => {
+    if (!categories.includes(selectedCategory)) {
+      setSelectedCategory("All");
+    }
+  }, [categories, selectedCategory]);
 
   const addTask = () => {
     if (taskInput.title.trim()) {
       if (editIndex !== null) {
         const taskToUpdate = { ...taskInput, _id: tasks[editIndex]._id };
-        axios.put(`http://localhost:5000/api/tasks/${taskToUpdate._id}`, taskToUpdate)
-          .then(res => {
+        axios
+          .put(
+            `http://localhost:5000/api/tasks/${taskToUpdate._id}`,
+            taskToUpdate
+          )
+          .then((res) => {
             const updatedTasks = [...tasks];
             updatedTasks[editIndex] = res.data;
             setTasks(updatedTasks);
             setEditIndex(null);
           });
       } else {
-        axios.post("http://localhost:5000/api/tasks", { ...taskInput, userEmail: user.email }).then(res => {
-  setTasks([...tasks, res.data]);
-});
-
+        axios
+          .post("http://localhost:5000/api/tasks", {
+            ...taskInput,
+            userEmail: user.email,
+          })
+          .then((res) => {
+            setTasks([...tasks, res.data]);
+            if (!categories.includes(newTask.category)) {
+              setCategories((prev) => [...prev, newTask.category]);
+            }
+          });
       }
-      setTaskInput({ title: "", dueDate: "", description: "", category: "General"});
+      setTaskInput({
+        title: "",
+        dueDate: "",
+        description: "",
+        category: "General",
+      });
       setShowPopup(false);
     }
   };
@@ -82,19 +133,26 @@ export default function TaskListPage() {
   };
 
   const handleToggleComplete = (index) => {
-    const updatedTask = { ...tasks[index] };
-    if (updatedTask.category !== "Completed") {
-      updatedTask.originalCategory = updatedTask.category;
-      updatedTask.category = "Completed";
-    } else {
-      updatedTask.category = updatedTask.originalCategory || "General";
-    }
-    axios.put(`http://localhost:5000/api/tasks/${updatedTask._id}`, updatedTask).then(res => {
-      const updatedTasks = [...tasks];
-      updatedTasks[index] = res.data;
-      setTasks(updatedTasks);
-    });
-  };
+  const task = tasks[index];
+  const updatedTask = { ...task };
+
+  if (task.category !== "Completed") {
+    // Store original category if marking complete
+    updatedTask.originalCategory = task.category;
+    updatedTask.category = "Completed";
+  } else {
+    // Restore original category if unmarking complete
+    updatedTask.category = task.originalCategory || "General";
+    delete updatedTask.originalCategory;
+  }
+
+  axios.put(`http://localhost:5000/api/tasks/${task._id}`, updatedTask).then(res => {
+    const updatedTasks = [...tasks];
+    updatedTasks[index] = res.data;
+    setTasks(updatedTasks);
+  });
+};
+
 
   const visibleTasks = tasks.filter(
     (t) => selectedCategory === "All" || t.category === selectedCategory
@@ -133,23 +191,27 @@ export default function TaskListPage() {
     return "Later";
   };
 
-  const handlelogin = () =>{
-    navigate('/login');
-  }
+  const handlelogin = () => {
+    navigate("/login");
+  };
 
   const handlecalendar = () => {
-    navigate1('/calendar');
-  }
-
+    navigate1("/calendar");
+  };
 
   return (
-    
     <div className="container">
       <div className="topBar">
-        <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="select">
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="select"
+        >
           <option value="All">All</option>
           {categories.map((cat, i) => (
-            <option key={i} value={cat}>{cat}</option>
+            <option key={i} value={cat}>
+              {cat}
+            </option>
           ))}
         </select>
         <button onClick={() => setShowPopup(true)} className="addButton">
@@ -159,7 +221,11 @@ export default function TaskListPage() {
 
       <div className="taskList">
         {visibleTasks.map((task, index) => (
-          <div key={index} className="taskItem" onClick={() => setSelectedTask(task)}>
+          <div
+            key={index}
+            className="taskItem"
+            onClick={() => setSelectedTask(task)}
+          >
             <div className="taskHeader">
               <input
                 type="checkbox"
@@ -172,10 +238,22 @@ export default function TaskListPage() {
               <h3>{task.title}</h3>
               <span className="categoryTag">{task.category}</span>
               <div className="taskActions">
-                <button className="editBtn" onClick={(e) => { e.stopPropagation(); handleEditTask(index); }}>
+                <button
+                  className="editBtn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditTask(index);
+                  }}
+                >
                   <Edit size={16} />
                 </button>
-                <button className="deleteBtn" onClick={(e) => { e.stopPropagation(); handleDeleteTask(index); }}>
+                <button
+                  className="deleteBtn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteTask(index);
+                  }}
+                >
                   <Trash2 size={16} />
                 </button>
               </div>
@@ -191,20 +269,31 @@ export default function TaskListPage() {
       </div>
 
       <div className="navBar">
-        <div className="navItem"><List size={20} /><span>Task</span></div>
-        <div className="navItem" onClick={() => handlecalendar()}><Calendar size={20} /><span>Calendar</span></div>
-        <div className="navItem" onClick={() => handlelogin()}><Settings size={20} /><span>Settings</span></div>
+        <div className="navItem">
+          <List size={20} />
+          <span>Task</span>
+        </div>
+        <div className="navItem" onClick={() => handlecalendar()}>
+          <Calendar size={20} />
+          <span>Calendar</span>
+        </div>
+        <div className="navItem" onClick={() => handlelogin()}>
+          <Settings size={20} />
+          <span>Settings</span>
+        </div>
       </div>
 
       {showPopup && (
         <div className="popupOverlay">
           <div className="popup">
-            <h2>Add Task</h2>
+            <h2>{editIndex !== null ? "Edit Task" : "Add Task"}</h2>
             <input
               type="text"
               placeholder="Title"
               value={taskInput.title}
-              onChange={(e) => setTaskInput({ ...taskInput, title: e.target.value })}
+              onChange={(e) =>
+                setTaskInput({ ...taskInput, title: e.target.value })
+              }
               className="input"
             />
             <div className="dateFieldWrapper">
@@ -215,10 +304,21 @@ export default function TaskListPage() {
                 readOnly
                 className="taskInput"
               />
-              <Calendar size={18} className="calendarIcon" onClick={() => datePickerRef.current.setOpen(true)} />
+              <Calendar
+                size={18}
+                className="calendarIcon"
+                onClick={() => datePickerRef.current.setOpen(true)}
+              />
               <DatePicker
-                selected={taskInput.dueDate ? new Date(taskInput.dueDate) : null}
-                onChange={(date) => setTaskInput({ ...taskInput, dueDate: date.toISOString().slice(0, 10) })}
+                selected={
+                  taskInput.dueDate ? new Date(taskInput.dueDate) : null
+                }
+                onChange={(date) =>
+                  setTaskInput({
+                    ...taskInput,
+                    dueDate: date.toISOString().slice(0, 10),
+                  })
+                }
                 dateFormat="yyyy-MM-dd"
                 ref={datePickerRef}
                 customInput={<div />}
@@ -228,18 +328,24 @@ export default function TaskListPage() {
             <textarea
               placeholder="Description"
               value={taskInput.description}
-              onChange={(e) => setTaskInput({ ...taskInput, description: e.target.value })}
+              onChange={(e) =>
+                setTaskInput({ ...taskInput, description: e.target.value })
+              }
               className="input textarea"
             />
             <div>
               <label>Select Category: </label>
               <select
                 value={taskInput.category}
-                onChange={(e) => setTaskInput({ ...taskInput, category: e.target.value })}
+                onChange={(e) =>
+                  setTaskInput({ ...taskInput, category: e.target.value })
+                }
                 className="select"
               >
                 {categories.map((cat, i) => (
-                  <option key={i} value={cat}>{cat}</option>
+                  <option key={i} value={cat}>
+                    {cat}
+                  </option>
                 ))}
               </select>
             </div>
@@ -251,11 +357,21 @@ export default function TaskListPage() {
                 onChange={(e) => setNewCategory(e.target.value)}
                 className="input"
               />
-              <button onClick={handleAddCategory} className="popupButton">Add Category</button>
+              <button onClick={handleAddCategory} className="popupButton">
+                Add Category
+              </button>
             </div>
             <div className="popupButtons">
-              <button onClick={addTask} className="popupButton">Add</button>
-              <button onClick={() => setShowPopup(false)} className="popupButton">Cancel</button>
+              <button onClick={addTask} className="popupButton">
+                {editIndex !== null ? "Edit" : "Add"}
+               
+              </button>
+              <button
+                onClick={() => {setShowPopup(false); setEditIndex(null);}}
+                className="popupButton"
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
@@ -266,12 +382,23 @@ export default function TaskListPage() {
           <div className="popup">
             <div className="popupHeader">
               <h2>Task Details</h2>
-              <X onClick={() => setSelectedTask(null)} style={{ cursor: "pointer" }} />
+              <X
+                onClick={() => setSelectedTask(null)}
+                style={{ cursor: "pointer" }}
+              />
             </div>
-            <p><strong>Title:</strong> {selectedTask.title}</p>
-            <p><strong>Due Date:</strong> {selectedTask.dueDate}</p>
-            <p><strong>Category:</strong> {selectedTask.category}</p>
-            <p><strong>Description:</strong> {selectedTask.description}</p>
+            <p>
+              <strong>Title:</strong> {selectedTask.title}
+            </p>
+            <p>
+              <strong>Due Date:</strong> {selectedTask.dueDate}
+            </p>
+            <p>
+              <strong>Category:</strong> {selectedTask.category}
+            </p>
+            <p>
+              <strong>Description:</strong> {selectedTask.description}
+            </p>
           </div>
         </div>
       )}

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import "./Login.css";
-import logo from "./assets/react.svg"; // Adjust path if needed
+import logo from "./assets/react.svg";
 import axios from "axios";
 import { data } from "react-router-dom";
 import { AuthContext } from './AuthContext';

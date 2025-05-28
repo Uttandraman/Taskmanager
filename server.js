@@ -2,12 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authRoutes = require('./auth');
+require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect('mongodb+srv://uttandaramanb:uttand%4004@taskmanager.tudirkm.mongodb.net/?retryWrites=true&w=majority&appName=Taskmanager')
+mongoose.connect(process.env.LINK)
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
