@@ -1,0 +1,57 @@
+.settings-sidebar-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 100vh;
+  z-index: 2000;
+  pointer-events: none;
+  transition: width 0.3s;
+}
+
+.settings-sidebar-overlay.open {
+  width: 100vw;
+  pointer-events: auto;
+}
+
+.settings-sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 380px;
+  max-width: 95vw;
+  height: 100vh;
+  background: #fff;
+  box-shadow: -2px 0 24px rgba(25, 118, 210, 0.13);
+  z-index: 2100;
+  transform: translateX(100%);
+  transition: transform 0.3s;
+  overflow-y: auto;
+}
+
+.settings-sidebar-overlay.open .settings-sidebar {
+  transform: translateX(0);
+}
+
+.settings-sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(30, 42, 70, 0.25);
+  z-index: 2000;
+  opacity: 1;
+}
+
+.sidebar-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #1976d2;
+  cursor: pointer;
+  z-index: 2200;
+}

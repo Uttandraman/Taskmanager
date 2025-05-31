@@ -101,7 +101,7 @@ export default function SignupPage() {
           <button type="submit">Sign Up</button>
         </form>
         <p className="form-footer">
-          Already have an account? <Link to="/login"> Login here</Link>
+          Already have an account? <Link to="/"> Login here</Link>
         </p>
       </div>
     </div>
