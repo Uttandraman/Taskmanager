@@ -200,7 +200,7 @@ export default function CalendarPage() {
           <CalendarIcon size={20} />
           <span>Calendar</span>
         </div>
-        <div className="navItem" onClick={() => navigate("/login")}>
+        <div className="navItem" onClick={() => navigate("/")}>
           <Settings size={20} />
           <span>Settings</span>
         </div>
