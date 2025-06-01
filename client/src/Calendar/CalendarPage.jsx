@@ -100,7 +100,7 @@ export default function CalendarPage() {
   return (
     <div>
     <div className="calendar-page">
-      <h2 className="page-title"> Calendar</h2>
+      <h2 className="page-title"> CALENDAR</h2>
 
       <div className="calendar-main-wrapper">
         <div className="calendar-box">
