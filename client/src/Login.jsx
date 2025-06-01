@@ -83,7 +83,7 @@ export default function LoginPage() {
           {/* <p>{user}</p> */}
         </form>
         <p className="form-footer">
-          Don't have an account? <Link to="/"> Signup</Link>
+          Don't have an account? <Link to="/signup"> Signup</Link>
         </p>
       </div>
     </div>

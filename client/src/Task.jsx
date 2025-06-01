@@ -6,6 +6,7 @@ import "./Task.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
+import SettingsSidebar from "./Settingpage/SettingsSidebar";
 
 export default function TaskListPage() {
   const datePickerRef = useRef();
@@ -27,6 +28,7 @@ export default function TaskListPage() {
   const [editIndex, setEditIndex] = useState(null);
   const navigate = useNavigate();
   const navigate1 = useNavigate();
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   //console.log(user);
   useEffect(() => {
@@ -191,9 +193,6 @@ export default function TaskListPage() {
     return "Later";
   };
 
-  const handlelogin = () => {
-    navigate("/login");
-  };
 
   const handlecalendar = () => {
     navigate1("/calendar");
@@ -277,11 +276,12 @@ export default function TaskListPage() {
           <Calendar size={20} />
           <span>Calendar</span>
         </div>
-        <div className="navItem" onClick={() => handlelogin()}>
+        <div className="navItem" onClick={() => setSettingsOpen(true)}>
           <Settings size={20} />
           <span>Settings</span>
         </div>
       </div>
+      <SettingsSidebar open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
       {showPopup && (
         <div className="popupOverlay">

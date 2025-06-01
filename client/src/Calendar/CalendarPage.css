@@ -34,6 +34,7 @@
   display: flex;
   gap: 30px;
   align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 /* Calendar and tasks */
@@ -107,14 +108,12 @@
   font-weight: 600;
 }
 
-/* Ensure buttons are visible */
 .react-calendar__navigation button {
   color: var(--primary) !important;
   background: transparent;
   font-size: 18px;
 }
 
-/* Optional: Improve hover on navigation */
 .react-calendar__navigation button:hover {
   background-color: #e0f2f1;
   border-radius: 6px;
@@ -213,6 +212,7 @@
   gap: 20px;
   height: 100%;
 }
+
 /* Card styles for summary and chart */
 .summary-card,
 .chart-card {
@@ -298,6 +298,7 @@
   cursor: pointer;
   transition: color 0.2s, transform 0.2s;
 }
+
 .navItem:hover {
   color: var(--accent);
   transform: scale(1.12) translateY(-2px);
