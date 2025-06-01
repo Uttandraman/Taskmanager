@@ -1,7 +1,7 @@
 // SignupPage.jsx
 import React, { useState } from "react";
-import "./SignUp.css";
-import logo from "./assets/react.svg"; // Adjust path if needed
+import "../Signup/SignUp.css";
+import logo from "../assets/react.svg"; // Adjust path if needed
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 

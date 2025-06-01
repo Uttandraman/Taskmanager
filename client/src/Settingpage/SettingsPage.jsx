@@ -1,114 +1,99 @@
 import React, { useState } from "react";
-import { FaUser, FaPalette, FaBell, FaGlobe, FaDatabase } from "react-icons/fa";
 import "./SettingsPage.css";
 
-const SettingsPage = () => {
-  const [theme, setTheme] = useState("light");
-  const [emailNotifications, setEmailNotifications] = useState(true);
-  const [language, setLanguage] = useState("en");
+export default function SettingsPage() {
+  const [darkMode, setDarkMode] = useState(false);
+  const [taskReminder, setTaskReminder] = useState(true);
+  const [reminderTime, setReminderTime] = useState("09:00");
+  const [defaultCategoryColor, setDefaultCategoryColor] = useState("#4CAF50");
+  const [username, setUsername] = useState("User123");
+
+  const handleExportTasks = () => {
+    alert("Tasks exported as JSON!");
+  };
+
+  const handleDeleteAccount = () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete your account? This action is irreversible."
+    );
+    if (confirmDelete) {
+      alert("Account deleted.");
+    }
+  };
 
   return (
     <div className="settings-container">
-      <h2 className="settings-title">Settings</h2>
+      <h2 className="settings-heading">Settings</h2>
 
-      {/* Profile Section */}
-      <section className="settings-section">
-        <div className="settings-section-header">
-          <FaUser className="settings-section-icon" />
-          <div>
-            <h3>Profile</h3>
-            <p className="settings-section-desc">Update your personal information.</p>
-          </div>
+      {/* Profile Settings */}
+      <div className="card">
+        <h3>Profile</h3>
+        <div className="field-group">
+          <label htmlFor="username">Username</label>
+          <input
+            id="username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
         </div>
-        <label className="settings-label">
-          Name
-          <input type="text" placeholder="Your Name" />
-        </label>
-        <label className="settings-label">
-          Email
-          <input type="email" placeholder="you@email.com" />
-        </label>
-        <button className="settings-button" style={{ marginTop: 8 }}>Update Profile</button>
-      </section>
+        <button className="button button-secondary">Change Password</button>
+      </div>
 
-      {/* Theme Section */}
-      <section className="settings-section">
-        <div className="settings-section-header">
-          <FaPalette className="settings-section-icon" />
-          <div>
-            <h3>Appearance</h3>
-            <p className="settings-section-desc">Choose your preferred theme.</p>
-          </div>
-        </div>
-        <label className="settings-label">
-          Theme
-          <select
-            value={theme}
-            onChange={e => setTheme(e.target.value)}
-          >
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </select>
-        </label>
-      </section>
-
-      {/* Notifications Section */}
-      <section className="settings-section">
-        <div className="settings-section-header">
-          <FaBell className="settings-section-icon" />
-          <div>
-            <h3>Notifications</h3>
-            <p className="settings-section-desc">Manage your notification preferences.</p>
-          </div>
-        </div>
-        <label className="settings-checkbox-label">
+      {/* Theme Settings */}
+      <div className="card">
+        <h3>Theme</h3>
+        <div className="switch-row">
+          <span>Dark Mode</span>
           <input
             type="checkbox"
-            checked={emailNotifications}
-            onChange={e => setEmailNotifications(e.target.checked)}
+            checked={darkMode}
+            onChange={() => setDarkMode(!darkMode)}
           />
-          Email notifications
-        </label>
-      </section>
+        </div>
+        <div className="field-group">
+          <label htmlFor="categoryColor">Default Category Color</label>
+          <input
+            id="categoryColor"
+            type="color"
+            value={defaultCategoryColor}
+            onChange={(e) => setDefaultCategoryColor(e.target.value)}
+          />
+        </div>
+      </div>
 
-      {/* Language Section */}
-      <section className="settings-section">
-        <div className="settings-section-header">
-          <FaGlobe className="settings-section-icon" />
-          <div>
-            <h3>Language</h3>
-            <p className="settings-section-desc">Select your language.</p>
-          </div>
+      {/* Notification Settings */}
+      <div className="card">
+        <h3>Notifications</h3>
+        <div className="switch-row">
+          <span>Task Reminders</span>
+          <input
+            type="checkbox"
+            checked={taskReminder}
+            onChange={() => setTaskReminder(!taskReminder)}
+          />
         </div>
-        <label className="settings-label">
-          Language
-          <select
-            value={language}
-            onChange={e => setLanguage(e.target.value)}
-          >
-            <option value="en">English</option>
-            <option value="es">Spanish</option>
-            {/* Add more languages as needed */}
-          </select>
-        </label>
-      </section>
+        <div className="field-group">
+          <label htmlFor="reminderTime">Reminder Time</label>
+          <input
+            id="reminderTime"
+            type="time"
+            value={reminderTime}
+            onChange={(e) => setReminderTime(e.target.value)}
+          />
+        </div>
+      </div>
 
-      {/* Export/Import Section */}
-      <section className="settings-section">
-        <div className="settings-section-header">
-          <FaDatabase className="settings-section-icon" />
-          <div>
-            <h3>Data</h3>
-            <p className="settings-section-desc">Export or import your tasks.</p>
-          </div>
-        </div>
-        <div className="settings-buttons">
-          <button className="settings-button">Export Tasks</button>
-          <button className="settings-button">Import Tasks</button>
-        </div>
-      </section>
+      {/* Data Management */}
+      <div className="card">
+        <h3>Data & Account</h3>
+        <button className="button" onClick={handleExportTasks}>
+          Export Tasks as JSON
+        </button>
+        <button className="button button-destructive" onClick={handleDeleteAccount}>
+          Delete Account
+        </button>
+      </div>
     </div>
   );
-};
-
-export default SettingsPage;
+}
