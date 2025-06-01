@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
-import "./Login.css";
-import logo from "./assets/react.svg";
+import "../Login/Login.css";
+import logo from "../assets/react.svg";
 import axios from "axios";
 import { data } from "react-router-dom";
-import { AuthContext } from './AuthContext';
+import { AuthContext } from '../AuthContext';
 import {Link, useNavigate} from 'react-router-dom';
 
 export default function LoginPage() {

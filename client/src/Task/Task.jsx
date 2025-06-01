@@ -2,11 +2,11 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Plus, Calendar, Settings, List, X, Edit, Trash2 } from "lucide-react";
-import "./Task.css";
+import "../Task/Task.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "./AuthContext";
-import SettingsSidebar from "./Settingpage/SettingsSidebar";
+import { AuthContext } from "../AuthContext";
+import SettingsSidebar from "../Settingpage/SettingsSidebar";
 
 export default function TaskListPage() {
   const datePickerRef = useRef();
@@ -55,18 +55,17 @@ export default function TaskListPage() {
   }, [user]);
 
   useEffect(() => {
-  const activeCategories = Array.from(
-    new Set(
-      tasks
-        .filter((task) => task.category !== "Completed")
-        .map((task) => task.category)
-    )
-  );
+    const activeCategories = Array.from(
+      new Set(
+        tasks
+          .filter((task) => task.category !== "Completed")
+          .map((task) => task.category)
+      )
+    );
 
-  const finalCategories = [...activeCategories, "Completed"];
-  setCategories(finalCategories);
-}, [tasks]);
-
+    const finalCategories = [...activeCategories, "Completed"];
+    setCategories(finalCategories);
+  }, [tasks]);
 
   useEffect(() => {
     if (!categories.includes(selectedCategory)) {
@@ -135,26 +134,27 @@ export default function TaskListPage() {
   };
 
   const handleToggleComplete = (index) => {
-  const task = tasks[index];
-  const updatedTask = { ...task };
+    const task = tasks[index];
+    const updatedTask = { ...task };
 
-  if (task.category !== "Completed") {
-    // Store original category if marking complete
-    updatedTask.originalCategory = task.category;
-    updatedTask.category = "Completed";
-  } else {
-    // Restore original category if unmarking complete
-    updatedTask.category = task.originalCategory || "General";
-    delete updatedTask.originalCategory;
-  }
+    if (task.category !== "Completed") {
+      // Store original category if marking complete
+      updatedTask.originalCategory = task.category;
+      updatedTask.category = "Completed";
+    } else {
+      // Restore original category if unmarking complete
+      updatedTask.category = task.originalCategory || "General";
+      delete updatedTask.originalCategory;
+    }
 
-  axios.put(`http://localhost:5000/api/tasks/${task._id}`, updatedTask).then(res => {
-    const updatedTasks = [...tasks];
-    updatedTasks[index] = res.data;
-    setTasks(updatedTasks);
-  });
-};
-
+    axios
+      .put(`http://localhost:5000/api/tasks/${task._id}`, updatedTask)
+      .then((res) => {
+        const updatedTasks = [...tasks];
+        updatedTasks[index] = res.data;
+        setTasks(updatedTasks);
+      });
+  };
 
   const visibleTasks = tasks.filter(
     (t) => selectedCategory === "All" || t.category === selectedCategory
@@ -192,7 +192,6 @@ export default function TaskListPage() {
     if (dueYear > thisYear) return "Next Year";
     return "Later";
   };
-
 
   const handlecalendar = () => {
     navigate1("/calendar");
@@ -281,7 +280,10 @@ export default function TaskListPage() {
           <span>Settings</span>
         </div>
       </div>
-      <SettingsSidebar open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <SettingsSidebar
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+      />
 
       {showPopup && (
         <div className="popupOverlay">
@@ -364,10 +366,12 @@ export default function TaskListPage() {
             <div className="popupButtons">
               <button onClick={addTask} className="popupButton">
                 {editIndex !== null ? "Edit" : "Add"}
-               
               </button>
               <button
-                onClick={() => {setShowPopup(false); setEditIndex(null);}}
+                onClick={() => {
+                  setShowPopup(false);
+                  setEditIndex(null);
+                }}
                 className="popupButton"
               >
                 Cancel
